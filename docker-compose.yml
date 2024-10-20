@@ -1,0 +1,38 @@
+services:
+  api:
+    container_name: "printscript-api"
+    build:
+      context: .
+    ports:
+      - "8081:8080"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "printscript_db"
+      DB_HOST: "db"
+      DB_PORT: 5432
+    networks:
+      - printscript_network
+    depends_on:
+      - db
+
+  db:
+    container_name: "printscript_db"
+    image: postgres:alpine
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "printscript_db"
+    volumes:
+      - printscript_db:/var/lib/postgresql/data
+    networks:
+      - printscript_network
+
+volumes:
+  printscript_db:
+
+networks:
+  printscript_network:
+    external: true
