@@ -3,36 +3,31 @@ services:
     container_name: "printscript-api"
     build:
       context: .
+      dockerfile: Dockerfile
     ports:
-      - "8082:8080"
+      - 8083:8080
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "printscript_db"
-      DB_HOST: "db"
-      DB_PORT: 5432
-    networks:
-      - printscript_network
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
     depends_on:
       - db
+      - redis
 
   db:
-    container_name: "printscript_db"
-    image: postgres:alpine
+    container_name: "printscript-db"
+    image: postgres:12
     ports:
-      - "5431:5432"
+      - 5432:5432
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "printscript_db"
-    volumes:
-      - printscript_db:/var/lib/postgresql/data
-    networks:
-      - printscript_network
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
 
-volumes:
-  printscript_db:
-
-networks:
-  printscript_network:
-    external: true
+  redis:
+    container_name: "redis"
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
