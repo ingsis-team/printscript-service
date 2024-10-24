@@ -1,14 +1,20 @@
-FROM gradle:8.7.0-jdk17
+FROM gradle:8.5-jdk21 AS build
 
-# Copy your project files
-COPY . /home/gradle/src
+ARG USERNAME
+ARG GIT_TOKEN
+
+ENV GIT_TOKEN=${GIT_TOKEN}
+ENV GITHUB_ACTOR ${USERNAME}
+
+
+
+COPY  . /home/gradle/src
 WORKDIR /home/gradle/src
-
-# Build the application
 RUN gradle assemble
 
-# Expose port
+FROM amazoncorretto:21-alpine
 EXPOSE 8080
+RUN mkdir /app
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "/home/gradle/src/build/libs/PrintScriptService-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar","-javaagent:/usr/local/newrelic/newrelic.jar","-Dspring.profiles.active=production","/app/spring-boot-application.jar"]
