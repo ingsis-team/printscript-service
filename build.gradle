@@ -1,60 +1,85 @@
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '1.9.25'
-	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
-	id 'org.springframework.boot' version '3.3.4'
-	id 'io.spring.dependency-management' version '1.1.6'
-	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
-	id 'org.jlleitschuh.gradle.ktlint' version '12.1.1'
-	id 'org.jetbrains.kotlinx.kover' version '0.9.0-RC'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+    id 'org.jlleitschuh.gradle.ktlint' version '12.1.1'
+    id 'org.jetbrains.kotlinx.kover' version '0.9.0-RC'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/AnaB2/printscript")
+        credentials {
+            username = System.getenv("USERNAME")
+            password = System.getenv("GIT_TOKEN")
+        }
+    }
 }
 
-repositories {
-	mavenCentral()
+
+kotlin {
+    jvmToolchain(21)
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	runtimeOnly 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    compileOnly("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'redis.clients:jedis:3.7.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions:1.1.5'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3") // Reemplaza con la versión más reciente
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3") // Para usar con reactive
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation 'printscript:commons:1.0.0-SNAPSHOT'
+    implementation 'printscript:interpreter:1.0.0-SNAPSHOT'
+    implementation 'printscript:lexer:1.0.0-SNAPSHOT'
+    implementation 'printscript:linter:1.0.0-SNAPSHOT'
+    implementation 'printscript:parser:1.0.0-SNAPSHOT'
+    implementation 'printscript:formatter:1.0.0-SNAPSHOT'
 
-kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll '-Xjsr305=strict'
-	}
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 tasks.register('installPreCommitHook') {
-	def hookFile = new File("$projectDir/pre-commit")
-	def hooksDir = new File("$projectDir/.git/hooks")
+    def hookFile = new File("$projectDir/pre-commit")
+    def hooksDir = new File("$projectDir/.git/hooks")
 
-	if(hooksDir.exists()){
-		def targetFile = new File(hooksDir, "pre-commit")
-		targetFile.withOutputStream { out ->
-			hookFile.withInputStream { inStream ->
-				out << inStream
-			}
-		}
-		println("Pre-commit hook installed.")
-	} else {
-		println("No .git/hooks directory found. Please initialize a git repository.")
-	}
+    if(hooksDir.exists()){
+        def targetFile = new File(hooksDir, "pre-commit")
+        targetFile.withOutputStream { out ->
+            hookFile.withInputStream { inStream ->
+                out << inStream
+            }
+        }
+        println("Pre-commit hook installed.")
+    } else {
+        println("No .git/hooks directory found. Please initialize a git repository.")
+    }
 }
