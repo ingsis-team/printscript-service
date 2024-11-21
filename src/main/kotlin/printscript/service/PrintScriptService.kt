@@ -1,87 +1,282 @@
 package printscript.service
 
+import ast.ASTNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import formatOperations.AssignationFormatter
+import formatOperations.BinaryFormatter
+import formatOperations.BlockFormatter
+import formatOperations.ConditionalFormatter
+import formatOperations.DeclarationFormatter
+import formatOperations.FormattingOperation
+import formatOperations.LiteralFormatter
+import formatOperations.PrintFormatter
 import formatter.FormatterPS
 import lexer.Lexer
 import lexer.TokenMapper
 import linter.Linter
+import linter.LinterVersion
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.client.WebClient
 import parser.Parser
 import printscript.interfaces.LanguageService
 import printscript.model.Output
 import printscript.model.SCAOutput
+import printscript.model.dto.FormatterFileDTO
+import printscript.model.dto.LinterFileDTO
+import reactor.core.publisher.Mono
+import rules.RulesReader
+import token.Token
+import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.InputStream
 import java.util.UUID
 
 @Service
-class PrintScriptService(
-    private val tokenMapper: TokenMapper,
-    private val parser: Parser,
-    private val linter: Linter,
-    private val formatter: FormatterPS,
-) : LanguageService {
-    override fun runScript(
-        input: InputStream,
-        version: String,
-    ): Output {
-        // Paso 1: Análisis léxico
-        val lexer = Lexer(tokenMapper)
-        val tokens = lexer.execute(input.bufferedReader().readText())
+class PrintScriptService
+    @Autowired
+    constructor(
+        private val tokenMapper: TokenMapper,
+        private val parser: Parser,
+        private val linter: Linter,
+        private val formatter: FormatterPS,
+        private val formatterService: FormatterRulesService,
+        private val linterRulesService: LinterRulesService,
+        @Value("\${asset.url}") private val permissionUrl: String,
+    ) : LanguageService {
+        companion object {
+            fun objectMapper(): ObjectMapper {
+                val mapper = ObjectMapper()
+                mapper.propertyNamingStrategy = PropertyNamingStrategies.UPPER_CAMEL_CASE
+                return mapper
+            }
+        }
 
-        // Paso 2: Análisis sintáctico
-        val script = parser.execute(tokens)
+        val assetServiceApi = WebClient.builder().baseUrl("http://$permissionUrl/v1/asset").build()
 
-        // Paso 3: Ejecución del script
-        // Aquí asumimos que el árbol sintáctico tiene un método `evaluate` para ejecutar el código
+        override fun runScript(
+            input: InputStream,
+            version: String,
+        ): Output {
+            val lexer = Lexer(tokenMapper)
+            val tokens = lexer.execute(input.bufferedReader().readText())
+            val script = parser.execute(tokens)
+            return Output(script.toString())
+        }
 
-        return Output(script.toString())
-    }
+        override fun test(
+            input: String,
+            output: List<String>,
+            snippet: String,
+            envVars: String,
+        ): String {
+            val inputStream = ByteArrayInputStream(snippet.toByteArray())
+            val executionOutput = runScript(inputStream, "1.1")
+            val executionResult = executionOutput.string.split("\n")
+            for (i in output.indices) {
+                if (executionResult[i] != output[i]) {
+                    return "failure"
+                }
+            }
+            return "success"
+        }
 
-    override fun format(
-        snippetId: String,
-        input: InputStream,
-        version: String,
-        userId: String,
-        correlationId: UUID,
-    ): Output {
-        val formattedScript = formatter.format(input.bufferedReader().readText())
-        return Output(formattedScript)
-    }
+        override fun lint(
+            input: InputStream,
+            version: String,
+            userId: String,
+            correlationId: UUID,
+        ): MutableList<SCAOutput> {
+            val defaultPath = "./$userId-linterRules.json"
 
-    override fun lint(
-        input: InputStream,
-        version: String,
-        userId: String,
-        correlationId: UUID,
-    ): List<SCAOutput> {
-        val trees = parser.execute(Lexer(tokenMapper).execute(input.bufferedReader().readText()))
-        val lintResults = linter.check(trees)
-        return lintResults.getBrokenRules().map { brokenRule ->
-            SCAOutput(
-                description = brokenRule.ruleDescription,
-                lineNumber = brokenRule.errorPosition.row,
-                ruleBroken = brokenRule.ruleDescription,
-            )
+            try {
+                // Obtener reglas del servicio
+                val lintRules = linterRulesService.getLinterRulesByUserId(userId, correlationId)
+                val linterDto =
+                    LinterFileDTO(
+                        lintRules.identifierFormat,
+                        lintRules.enablePrintOnly,
+                        lintRules.enable_print_only,
+                        lintRules.enableInputOnly,
+                        lintRules.enable_input_only,
+                    )
+
+                // Crear archivo de reglas
+                val rulesFile = File(defaultPath)
+                objectMapper().writeValue(rulesFile, linterDto)
+
+                // Convertir InputStream a String
+                val code = input.bufferedReader().use { it.readText() }
+
+                // Tokenizar el código
+                val tokenMapper = TokenMapper(version)
+                val lexer = Lexer(tokenMapper)
+                val tokens: List<Token> = lexer.execute(code)
+
+                // Parsear los tokens para generar AST
+                val parser = Parser() // Asume que tienes un parser configurado por versión
+                val trees: List<ASTNode> = parser.execute(tokens)
+
+                // Instanciar el linter y aplicar las reglas
+                val linterVersion =
+                    LinterVersion.fromString(version)
+                        ?: throw IllegalArgumentException("Versión de linter no soportada: $version")
+                val linter = Linter(linterVersion)
+                val results = linter.check(trees)
+
+                // Convertir los BrokenRules a SCAOutput
+                val scaOutputs: MutableList<SCAOutput> =
+                    results.getBrokenRules().map { brokenRule ->
+                        SCAOutput(
+                            lineNumber = brokenRule.errorPosition.row,
+                            ruleBroken = brokenRule.ruleDescription,
+                            description = "Broken rule at line ${brokenRule.errorPosition.row}, column ${brokenRule.errorPosition.column}",
+                        )
+                    }.toMutableList()
+
+                return scaOutputs
+            } finally {
+                // Eliminar el archivo de reglas
+                val rulesFile = File(defaultPath)
+                if (rulesFile.exists()) {
+                    rulesFile.delete()
+                }
+            }
+        }
+
+        override fun format(
+            snippetId: String,
+            input: InputStream,
+            version: String,
+            userId: String,
+            correlationId: UUID,
+        ): Output {
+            val defaultPath = "./$userId-formatterRules.json"
+            try {
+                // Obtener reglas de formato del servicio
+                val formatterRules = formatterService.getFormatterRulesByUserId(userId, correlationId)
+                val formatterDto =
+                    FormatterFileDTO(
+                        formatterRules.spaceBeforeColon,
+                        formatterRules.spaceAfterColon,
+                        formatterRules.spaceAroundEquals,
+                        formatterRules.lineBreak,
+                        formatterRules.lineBreakPrintln,
+                        formatterRules.conditionalIndentation,
+                    )
+
+                // Escribir las reglas en un archivo JSON temporal
+                val rulesFile = File(defaultPath)
+                ObjectMapper().writeValue(rulesFile, formatterDto)
+
+                // Configurar las reglas, lexer, parser y operaciones
+                val rulesReader =
+                    RulesReader(
+                        mapOf(
+                            "spaceBeforeColon" to Boolean::class,
+                            "spaceAfterColon" to Boolean::class,
+                            "spaceAroundEquals" to Boolean::class,
+                            "lineBreakPrintln" to Int::class,
+                            "conditionalIndentation" to Int::class,
+                        ),
+                    )
+                val lexer = Lexer(TokenMapper(version))
+                val parser = Parser()
+
+                // Declarar las funciones para palabras clave y tipos de datos
+                val getAllowedDeclarationKeywords = { version: String ->
+                    when (version) {
+                        "1.0" -> listOf("let")
+                        "1.1" -> listOf("let", "const")
+                        else -> throw IllegalArgumentException("Versión no soportada: $version")
+                    }
+                }
+                val getAllowedDataTypes = { version: String ->
+                    when (version) {
+                        "1.0" -> listOf("number", "string")
+                        "1.1" -> listOf("number", "string", "boolean")
+                        else -> throw IllegalArgumentException("Versión no soportada: $version")
+                    }
+                }
+
+                // Configurar las operaciones de formato
+                var formattingOperations: List<FormattingOperation> =
+                    listOf(
+                        AssignationFormatter(),
+                        BinaryFormatter(),
+                        BlockFormatter(),
+                        LiteralFormatter(),
+                        PrintFormatter(),
+                        DeclarationFormatter(getAllowedDeclarationKeywords(version), getAllowedDataTypes(version)),
+                    )
+                if (version == "1.1") {
+                    formattingOperations += ConditionalFormatter()
+                }
+
+                // Crear instancia de FormatterPS
+                val formatter = FormatterPS(rulesReader, defaultPath, formattingOperations, lexer, parser)
+
+                // Leer el código desde el InputStream
+                val code = input.bufferedReader().use { it.readText() }
+
+                // Ejecutar el formateador y obtener el código formateado
+                val formattedCode = formatter.format(code)
+
+                // Limpiar el archivo temporal
+                if (rulesFile.exists()) {
+                    rulesFile.delete()
+                }
+
+                // Actualizar el contenido formateado en el bucket
+                updateOnBucket(snippetId, formattedCode)
+
+                // Retornar el resultado formateado
+                return Output(formattedCode)
+            } catch (e: Exception) {
+                throw RuntimeException("Error al formatear el código: ${e.message}", e)
+            }
+        }
+
+        // Método para actualizar contenido en el bucket
+        fun updateOnBucket(
+            key: String,
+            content: String,
+        ) {
+            try {
+                // Eliminar el contenido existente en el bucket
+                val deleteResponseStatus =
+                    assetServiceApi
+                        .delete()
+                        .uri("/snippets/{key}", key)
+                        .exchangeToMono { clientResponse -> Mono.just(clientResponse.statusCode()) } // Wrap status code in Mono
+                        .block()
+
+                // Validar si la eliminación fue exitosa
+                if (deleteResponseStatus != HttpStatus.NO_CONTENT) {
+                    throw RuntimeException("Error al eliminar el snippet: Código de respuesta $deleteResponseStatus")
+                }
+
+                // Subir el nuevo contenido al bucket
+                val postResponseStatus =
+                    assetServiceApi
+                        .post()
+                        .uri("/snippets/{key}", key)
+                        .bodyValue(content)
+                        .exchangeToMono { clientResponse -> Mono.just(clientResponse.statusCode()) } // Wrap status code in Mono
+                        .block()
+
+                // Validar si la subida fue exitosa
+                if (postResponseStatus != HttpStatus.CREATED) {
+                    throw RuntimeException("Error al subir el snippet: Código de respuesta $postResponseStatus")
+                }
+
+                // Imprimir el estado de la respuesta
+                println("Snippet actualizado exitosamente con código de respuesta: $postResponseStatus")
+            } catch (e: Exception) {
+                throw RuntimeException("Error en la operación de actualización del bucket: ${e.message}", e)
+            }
         }
     }
-
-    override fun test(
-        input: String,
-        output: List<String>,
-        snippet: String,
-        envVars: String,
-    ): String {
-        // Paso 1: Crear un InputStream desde el string de entrada
-        val inputStream = input.byteInputStream()
-
-        // Paso 2: Ejecutar el script y obtener el resultado
-        val executionOutput = runScript(inputStream, version = "1.0")
-
-        // Paso 3: Verificar si el resultado coincide con la salida esperada
-        val executionResult = executionOutput.string
-        return if (output.contains(executionResult)) {
-            "Test passed"
-        } else {
-            "Test failed: expected ${output.joinToString(", ")} but got $executionResult"
-        }
-    }
-}
