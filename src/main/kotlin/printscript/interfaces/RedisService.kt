@@ -1,4 +1,4 @@
-package printscript.service.interfaces
+package printscript.interfaces
 
 import org.springframework.stereotype.Service
 import printscript.redis.dto.Snippet

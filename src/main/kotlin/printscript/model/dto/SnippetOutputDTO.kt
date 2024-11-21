@@ -1,4 +1,4 @@
-package printscript.model
+package printscript.model.dto
 
 import java.util.UUID
 

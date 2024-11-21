@@ -6,8 +6,8 @@ import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.stream.StreamReceiver
 import org.springframework.stereotype.Component
+import printscript.interfaces.RedisService
 import printscript.redis.dto.Snippet
-import printscript.service.interfaces.RedisService
 import java.time.Duration
 
 @Component

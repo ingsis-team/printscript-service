@@ -1,4 +1,4 @@
-package printscript.service.interfaces
+package printscript.interfaces
 
 import printscript.model.Output
 import printscript.model.SCAOutput

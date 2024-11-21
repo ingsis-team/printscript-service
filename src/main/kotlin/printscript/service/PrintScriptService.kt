@@ -1,20 +1,23 @@
 package printscript.service
-import formatter.Formatter
+
+import formatter.FormatterPS
 import lexer.Lexer
 import lexer.TokenMapper
 import linter.Linter
+import org.springframework.stereotype.Service
 import parser.Parser
+import printscript.interfaces.LanguageService
 import printscript.model.Output
 import printscript.model.SCAOutput
-import printscript.service.interfaces.LanguageService
 import java.io.InputStream
 import java.util.UUID
 
+@Service
 class PrintScriptService(
     private val tokenMapper: TokenMapper,
     private val parser: Parser,
     private val linter: Linter,
-    private val formatter: Formatter,
+    private val formatter: FormatterPS,
 ) : LanguageService {
     override fun runScript(
         input: InputStream,

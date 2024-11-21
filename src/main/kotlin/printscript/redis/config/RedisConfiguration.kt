@@ -12,7 +12,7 @@ import printscript.redis.consumer.SnippetFormatMessage
 import java.time.Duration
 
 @Configuration
-class ConnectionFactory(
+class RedisConfiguration(
     @Value("\${redis.host}") private val hostName: String,
     @Value("\${redis.port}") private val port: Int,
 ) {

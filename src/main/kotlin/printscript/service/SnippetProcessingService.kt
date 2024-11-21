@@ -2,7 +2,7 @@ package printscript.service
 
 import org.springframework.stereotype.Service
 import org.springframework.web.context.WebApplicationContext
-import printscript.service.interfaces.LanguageService
+import printscript.interfaces.LanguageService
 
 @Service
 class SnippetProcessingService(private val applicationContext: WebApplicationContext) {
