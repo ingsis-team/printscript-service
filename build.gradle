@@ -18,7 +18,7 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/AnaB2/printscript")
         credentials {
-            username = System.getenv("USERNAME")
+            username = System.getenv("USERNAME_PRINTSCRIPT")
             password = System.getenv("GIT_TOKEN")
         }
     }
@@ -51,16 +51,21 @@ dependencies {
     implementation 'redis.clients:jedis:3.7.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
     implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions:1.1.5'
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3") // Reemplaza con la versión más reciente
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3") // Para usar con reactive
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-    implementation 'printscript:commons:1.0.0-SNAPSHOT'
-    implementation 'printscript:interpreter:1.0.0-SNAPSHOT'
-    implementation 'printscript:lexer:1.0.0-SNAPSHOT'
-    implementation 'printscript:linter:1.0.0-SNAPSHOT'
-    implementation 'printscript:parser:1.0.0-SNAPSHOT'
-    implementation 'printscript:formatter:1.0.0-SNAPSHOT'
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation 'printscript:commons:1.0.1-SNAPSHOT'
+    implementation 'printscript:interpreter:1.0.1-SNAPSHOT'
+    implementation 'printscript:parser:1.0.1-SNAPSHOT'
+    implementation 'printscript:lexer:1.0.1-SNAPSHOT'
+    implementation 'printscript:linter:1.0.1-SNAPSHOT'
+    implementation 'printscript:formatter:1.0.1-SNAPSHOT'
+
+
+
+
+
 
 }
 

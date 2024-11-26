@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import printscript.model.Output
-import printscript.model.SnippetDTO
-import printscript.model.SnippetOutputDTO
-import printscript.model.TestDTO
+import printscript.model.dto.SnippetDTO
+import printscript.model.dto.SnippetOutputDTO
+import printscript.model.dto.TestDTO
 import printscript.service.SnippetProcessingService
 import java.io.ByteArrayInputStream
 
