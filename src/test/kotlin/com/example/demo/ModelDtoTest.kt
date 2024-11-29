@@ -12,7 +12,7 @@ import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class DtoTest {
+class ModelDtoTest {
     @Test
     fun `FormatterFileDTO should be correctly initialized`() {
         val formatterFileDTO =
