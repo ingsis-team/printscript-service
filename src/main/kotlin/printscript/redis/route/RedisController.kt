@@ -71,8 +71,6 @@ class RedisController
             val identifierFormat = data.rules.find { it.name == "identifierFormat" }?.value as? String ?: ""
             val enablePrintOnly = data.rules.find { it.name == "enablePrintOnly" }?.value as? Boolean ?: false
             val enableInputOnly = data.rules.find { it.name == "enableInputOnly" }?.value as? Boolean ?: false
-            val enablePrintOnlySnakeCase = data.rules.find { it.name == "enable_print_only" }?.value as? Boolean ?: false
-            val enableInputOnlySnakeCase = data.rules.find { it.name == "enable_input_only" }?.value as? Boolean ?: false
 
             val linterDto =
                 LinterRulesFileDTO(
@@ -80,8 +78,6 @@ class RedisController
                     identifierFormat,
                     enablePrintOnly,
                     enableInputOnly,
-                    enablePrintOnlySnakeCase,
-                    enableInputOnlySnakeCase,
                 )
             linterRulesService.updateLinterRules(linterDto, data.userId)
             data.snippets.map {

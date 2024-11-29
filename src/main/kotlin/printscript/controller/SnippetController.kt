@@ -100,8 +100,6 @@ class SnippetController(
         rulesList.add(Rule(id = "1", name = "identifierFormat", isActive = true, value = linterRules.identifierFormat))
         rulesList.add(Rule(id = "2", name = "enablePrintOnly", isActive = true, value = linterRules.enablePrintOnly))
         rulesList.add(Rule(id = "3", name = "enableInputOnly", isActive = true, value = linterRules.enableInputOnly))
-        rulesList.add(Rule(id = "4", name = "enable_print_only", isActive = true, value = linterRules.enable_print_only))
-        rulesList.add(Rule(id = "5", name = "enable_input_only", isActive = true, value = linterRules.enable_input_only))
 
         return ResponseEntity.ok(rulesList)
     }

@@ -21,8 +21,4 @@ class LinterRules(
     var enablePrintOnly: Boolean = true,
     @Column(name = "enableInputOnly")
     var enableInputOnly: Boolean = true,
-    @Column(name = "enable_print_only")
-    var enable_print_only: Boolean = true,
-    @Column(name = "enable_input_only")
-    var enable_input_only: Boolean = true,
 )

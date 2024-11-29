@@ -99,9 +99,7 @@ class PrintScriptService
                     LinterFileDTO(
                         lintRules.identifierFormat,
                         lintRules.enablePrintOnly,
-                        lintRules.enable_print_only,
                         lintRules.enableInputOnly,
-                        lintRules.enable_input_only,
                     )
 
                 // Crear archivo de reglas
