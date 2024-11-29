@@ -26,6 +26,13 @@ class SnippetController(
     private val linterRulesService: LinterRulesService,
     private val formaterRulesService: FormatterRulesService,
 ) {
+//    @PostMapping("/validate")
+//    fun validateSnippet(@RequestBody validate: String):ValidationResult{
+//
+//
+//    }
+    // En caso de que no se cumpla alguna de las reglas isvalid:False y te dara la columna, y la fila, en cambio si es valido devolver isvalid: true, teniendo en cuenta
+
     @PostMapping("/run")
     fun runSnippet(
         @RequestBody snippetRunnerDTO: SnippetDTO,

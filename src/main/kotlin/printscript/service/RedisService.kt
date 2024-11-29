@@ -2,6 +2,7 @@ package printscript.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import printscript.interfaces.RedisService
 import printscript.redis.dto.Snippet
 import java.io.ByteArrayInputStream
 
@@ -10,8 +11,8 @@ class RedisService
     @Autowired
     constructor(
         private val snippetService: PrintScriptService,
-    ) {
-        fun formatSnippet(snippet: Snippet): Snippet {
+    ) : RedisService {
+        override fun formatSnippet(snippet: Snippet): Snippet {
             // Llama al método format de PrintScriptService
             val formattedOutput =
                 snippetService.format(
@@ -37,7 +38,7 @@ class RedisService
             return outputSnippet
         }
 
-        fun lintSnippet(snippet: Snippet): Snippet {
+        override fun lintSnippet(snippet: Snippet): Snippet {
             println("Estoy linteando un snippet")
 
             // Llama al método lint de PrintScriptService
