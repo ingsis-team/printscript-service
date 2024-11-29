@@ -27,6 +27,7 @@ import printscript.model.Output
 import printscript.model.SCAOutput
 import printscript.model.dto.FormatterFileDTO
 import printscript.model.dto.LinterFileDTO
+import printscript.model.dto.ValidationResult
 import reactor.core.publisher.Mono
 import rules.RulesReader
 import token.Token
@@ -84,6 +85,42 @@ class PrintScriptService
             return "success"
         }
 
+        override fun validate(
+            input: String,
+            version: String,
+        ): ValidationResult {
+            val lexer = Lexer(tokenMapper)
+            val tokens = lexer.execute(input)
+            val script = parser.execute(tokens)
+            val linterVersion =
+                LinterVersion.fromString(version)
+                    ?: throw IllegalArgumentException("Versión de linter no soportada: $version")
+            val linter = Linter(linterVersion)
+
+            val results = linter.check(script)
+
+            val scaOutputs: MutableList<SCAOutput> =
+                results.getBrokenRules().map { brokenRule ->
+                    SCAOutput(
+                        lineNumber = brokenRule.errorPosition.row,
+                        ruleBroken = brokenRule.ruleDescription,
+                        description = "Broken rule at line ${brokenRule.errorPosition.row}, column ${brokenRule.errorPosition.column}",
+                    )
+                }.toMutableList()
+
+            return if (scaOutputs.isEmpty()) {
+                ValidationResult(isValid = true, rule = "", line = 0, column = 0)
+            } else {
+                val firstBrokenRule = scaOutputs.first()
+                ValidationResult(
+                    isValid = false,
+                    rule = firstBrokenRule.ruleBroken,
+                    line = firstBrokenRule.lineNumber,
+                    column = firstBrokenRule.description.split(", column ")[1].toInt(),
+                )
+            }
+        }
+
         override fun lint(
             input: InputStream,
             version: String,
@@ -93,7 +130,6 @@ class PrintScriptService
             val defaultPath = "./$userId-linterRules.json"
 
             try {
-                // Obtener reglas del servicio
                 val lintRules = linterRulesService.getLinterRulesByUserId(userId, correlationId)
                 val linterDto =
                     LinterFileDTO(
@@ -102,20 +138,16 @@ class PrintScriptService
                         lintRules.enableInputOnly,
                     )
 
-                // Crear archivo de reglas
                 val rulesFile = File(defaultPath)
                 objectMapper().writeValue(rulesFile, linterDto)
 
-                // Convertir InputStream a String
                 val code = input.bufferedReader().use { it.readText() }
 
-                // Tokenizar el código
                 val tokenMapper = TokenMapper(version)
                 val lexer = Lexer(tokenMapper)
                 val tokens: List<Token> = lexer.execute(code)
 
-                // Parsear los tokens para generar AST
-                val parser = Parser() // Asume que tienes un parser configurado por versión
+                val parser = Parser()
                 val trees: List<ASTNode> = parser.execute(tokens)
 
                 // Instanciar el linter y aplicar las reglas

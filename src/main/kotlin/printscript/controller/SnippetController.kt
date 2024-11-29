@@ -13,6 +13,7 @@ import printscript.model.SCAOutput
 import printscript.model.dto.SnippetDTO
 import printscript.model.dto.SnippetOutputDTO
 import printscript.model.dto.TestDTO
+import printscript.model.dto.ValidationResult
 import printscript.redis.dto.Rule
 import printscript.service.FormatterRulesService
 import printscript.service.LinterRulesService
@@ -26,11 +27,14 @@ class SnippetController(
     private val linterRulesService: LinterRulesService,
     private val formaterRulesService: FormatterRulesService,
 ) {
-//    @PostMapping("/validate")
-//    fun validateSnippet(@RequestBody validate: String):ValidationResult{
-//
-//
-//    }
+    @PostMapping("/validate")
+    fun validateSnippet(
+        @RequestBody validate: String,
+    ): ValidationResult {
+        val languageService = snippetProcessingService.selectService("printscript")
+        val result = languageService.validate(validate, "1.1")
+        return result
+    }
     // En caso de que no se cumpla alguna de las reglas isvalid:False y te dara la columna, y la fila, en cambio si es valido devolver isvalid: true, teniendo en cuenta
 
     @PostMapping("/run")

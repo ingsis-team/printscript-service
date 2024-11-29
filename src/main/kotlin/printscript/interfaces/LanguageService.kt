@@ -2,6 +2,7 @@ package printscript.interfaces
 
 import printscript.model.Output
 import printscript.model.SCAOutput
+import printscript.model.dto.ValidationResult
 import java.io.InputStream
 import java.util.UUID
 
@@ -32,4 +33,9 @@ interface LanguageService {
         snippet: String,
         envVars: String,
     ): String
+
+    fun validate(
+        input: String,
+        version: String,
+    ): ValidationResult
 }
