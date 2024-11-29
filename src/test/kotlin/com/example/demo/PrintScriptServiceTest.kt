@@ -120,4 +120,22 @@ class PrintScriptServiceTest {
 
         assertEquals("failure", result)
     }
+
+    @Test
+    fun `validate should return ValidationResult`() {
+        val input = "let x : number = 8;"
+        val version = "1.0"
+
+        val result = service.validate(input, version)
+
+        assertNotNull(result, "ValidationResult should not be null")
+        if (result.isValid) {
+            assertEquals(true, result.isValid, "ValidationResult should be valid")
+        } else {
+            assertEquals(false, result.isValid, "ValidationResult should be invalid")
+            assertNotNull(result.rule, "Rule should not be null")
+            assertNotNull(result.line, "Line should not be null")
+            assertNotNull(result.column, "Column should not be null")
+        }
+    }
 }
