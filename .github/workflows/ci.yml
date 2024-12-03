@@ -9,6 +9,12 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+  secrets: read
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,8 +31,16 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build with Gradle
+
+
+      - name: Check secrets
+        run: echo "USERNAME_PRINTSCRIPT is ${{ secrets.USERNAME_PRINTSCRIPT }}"
         env:
-          USERNAME: ${{secrets.USERNAME_PRINTSCRIPT }}
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+            USERNAME_PRINTSCRIPT: ${{ secrets.USERNAME_PRINTSCRIPT }}
+            GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+      - name: Build with Gradle
         run: ./gradlew build
+        env:
+          USERNAME_PRINTSCRIPT: ${{secrets.USERNAME_PRINTSCRIPT }}
+          GIT_TOKEN: ${{secrets.GIT_TOKEN }}
