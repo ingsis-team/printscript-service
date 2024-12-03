@@ -13,7 +13,6 @@ class ModelLinterAndFormatterRulesTest {
                 spaceBeforeColon = true,
                 spaceAfterColon = false,
                 spaceAroundEquals = true,
-                lineBreak = 2,
                 lineBreakPrintln = 3,
                 conditionalIndentation = 4,
             )
@@ -24,7 +23,6 @@ class ModelLinterAndFormatterRulesTest {
         assertEquals(true, formatterRules.spaceBeforeColon)
         assertEquals(false, formatterRules.spaceAfterColon)
         assertEquals(true, formatterRules.spaceAroundEquals)
-        assertEquals(2, formatterRules.lineBreak)
         assertEquals(3, formatterRules.lineBreakPrintln)
         assertEquals(4, formatterRules.conditionalIndentation)
     }

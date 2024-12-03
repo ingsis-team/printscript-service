@@ -20,7 +20,6 @@ class ModelDtoTest {
                 spaceBeforeColon = true,
                 spaceAfterColon = true,
                 spaceAroundEquals = true,
-                lineBreak = 10,
                 lineBreakPrintln = 15,
                 conditionalIndentation = 4,
             )
@@ -28,7 +27,6 @@ class ModelDtoTest {
         assertEquals(true, formatterFileDTO.spaceBeforeColon)
         assertEquals(true, formatterFileDTO.spaceAfterColon)
         assertEquals(true, formatterFileDTO.spaceAroundEquals)
-        assertEquals(10, formatterFileDTO.lineBreak)
         assertEquals(15, formatterFileDTO.lineBreakPrintln)
         assertEquals(4, formatterFileDTO.conditionalIndentation)
     }
@@ -41,7 +39,6 @@ class ModelDtoTest {
                 spaceBeforeColon = true,
                 spaceAfterColon = true,
                 spaceAroundEquals = true,
-                lineBreak = 10,
                 lineBreakPrintln = 15,
                 conditionalIndentation = 4,
             )
@@ -50,7 +47,6 @@ class ModelDtoTest {
         assertEquals(true, formatterRulesFileDTO.spaceBeforeColon)
         assertEquals(true, formatterRulesFileDTO.spaceAfterColon)
         assertEquals(true, formatterRulesFileDTO.spaceAroundEquals)
-        assertEquals(10, formatterRulesFileDTO.lineBreak)
         assertEquals(15, formatterRulesFileDTO.lineBreakPrintln)
         assertEquals(4, formatterRulesFileDTO.conditionalIndentation)
     }

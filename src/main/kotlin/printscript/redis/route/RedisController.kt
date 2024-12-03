@@ -33,7 +33,6 @@ class RedisController
             val spaceBeforeColon = data.rules.find { it.name == "SpaceBeforeColon" }?.value as? Boolean ?: false
             val spaceAfterColon = data.rules.find { it.name == "SpaceAfterColon" }?.value as? Boolean ?: false
             val spaceAroundEquals = data.rules.find { it.name == "SpaceAroundEquals" }?.value as? Boolean ?: false
-            val lineBreak = data.rules.find { it.name == "LineBreak" }?.value as? Int ?: 0
             val lineBreakPrintln = data.rules.find { it.name == "LineBreakPrintln" }?.value as? Int ?: 0
             val conditionalIndentation = data.rules.find { it.name == "ConditionalIndentation" }?.value as? Int ?: 0
 
@@ -43,14 +42,13 @@ class RedisController
                     spaceBeforeColon,
                     spaceAfterColon,
                     spaceAroundEquals,
-                    lineBreak,
                     lineBreakPrintln,
                     conditionalIndentation,
                 )
             println(
                 "formatterDto: userId=${formatterDto.userId}, spaceBeforeColon=${formatterDto.spaceBeforeColon}," +
                     " spaceAfterColon=${formatterDto.spaceAfterColon}, " +
-                    "spaceAroundEquals=${formatterDto.spaceAroundEquals}, lineBreak=${formatterDto.lineBreak}," +
+                    "spaceAroundEquals=${formatterDto.spaceAroundEquals}," +
                     " lineBreakPrintln=${formatterDto.lineBreakPrintln}," +
                     " conditionalIndentation=${formatterDto.conditionalIndentation}",
             )

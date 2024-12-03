@@ -193,7 +193,6 @@ class PrintScriptService
                         formatterRules.spaceBeforeColon,
                         formatterRules.spaceAfterColon,
                         formatterRules.spaceAroundEquals,
-                        formatterRules.lineBreak,
                         formatterRules.lineBreakPrintln,
                         formatterRules.conditionalIndentation,
                     )
@@ -217,14 +216,14 @@ class PrintScriptService
                 val parser = Parser()
 
                 // Declarar las funciones para palabras clave y tipos de datos
-                val getAllowedDeclarationKeywords = { version: String ->
-                    when (version) {
+                val getAllowedDeclarationKeywords = { Declversion: String ->
+                    when (Declversion) {
                         "1.0" -> listOf("let")
                         "1.1" -> listOf("let", "const")
                         else -> throw IllegalArgumentException("Versión no soportada: $version")
                     }
                 }
-                val getAllowedDataTypes = { version: String ->
+                val getAllowedDataTypes = { Declversion: String ->
                     when (version) {
                         "1.0" -> listOf("number", "string")
                         "1.1" -> listOf("number", "string", "boolean")

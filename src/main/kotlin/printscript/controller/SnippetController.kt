@@ -93,9 +93,8 @@ class SnippetController(
         rulesList.add(Rule(id = "1", name = "spaceBeforeColon", isActive = true, value = formatterRules.spaceBeforeColon))
         rulesList.add(Rule(id = "2", name = "spaceAfterColon", isActive = true, value = formatterRules.spaceAfterColon))
         rulesList.add(Rule(id = "3", name = "spaceAroundEquals", isActive = true, value = formatterRules.spaceAroundEquals))
-        rulesList.add(Rule(id = "4", name = "lineBreak", isActive = true, value = formatterRules.lineBreak))
-        rulesList.add(Rule(id = "5", name = "lineBreakPrintln", isActive = true, value = formatterRules.lineBreakPrintln))
-        rulesList.add(Rule(id = "6", name = "conditionalIndentation", isActive = true, value = formatterRules.conditionalIndentation))
+        rulesList.add(Rule(id = "4", name = "lineBreakPrintln", isActive = true, value = formatterRules.lineBreakPrintln))
+        rulesList.add(Rule(id = "5", name = "conditionalIndentation", isActive = true, value = formatterRules.conditionalIndentation))
 
         return ResponseEntity.ok(rulesList)
     }
