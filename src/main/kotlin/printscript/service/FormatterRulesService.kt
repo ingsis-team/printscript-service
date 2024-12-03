@@ -30,7 +30,6 @@ class FormatterRulesService(
             rules.spaceBeforeColon = formatterRules.spaceBeforeColon
             rules.spaceAfterColon = formatterRules.spaceAfterColon
             rules.spaceAroundEquals = formatterRules.spaceAroundEquals
-            rules.lineBreak = formatterRules.lineBreak
             rules.lineBreakPrintln = formatterRules.lineBreakPrintln
             rules.conditionalIndentation = formatterRules.conditionalIndentation
             formatterRulesRepository.save(rules)
@@ -40,7 +39,6 @@ class FormatterRulesService(
                 rules.spaceBeforeColon,
                 rules.spaceAfterColon,
                 rules.spaceAroundEquals,
-                rules.lineBreak,
                 rules.lineBreakPrintln,
                 rules.conditionalIndentation,
             )
@@ -66,7 +64,6 @@ class FormatterRulesService(
                 spaceBeforeColon = false,
                 spaceAfterColon = false,
                 spaceAroundEquals = false,
-                lineBreak = 0,
                 lineBreakPrintln = 0,
                 conditionalIndentation = 0,
             )
