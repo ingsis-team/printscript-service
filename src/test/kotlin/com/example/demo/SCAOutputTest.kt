@@ -1,3 +1,4 @@
+import printscript.model.Output
 import printscript.model.SCAOutput
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,5 +37,11 @@ class SCAOutputTest {
         assertEquals(5, scaOutput.lineNumber)
         assertEquals("Rule 2", scaOutput.ruleBroken)
         assertEquals("Another broken rule", scaOutput.description)
+    }
+
+    @Test
+    fun `Output test`() {
+        val output = Output("Hello")
+        assertEquals("Hello", output.string)
     }
 }

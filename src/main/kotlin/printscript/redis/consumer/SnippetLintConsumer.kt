@@ -26,7 +26,7 @@ class SnippetLintConsumer
                 .build()
         }
 
-        override fun onMessage(record: ObjectRecord<String, Snippet>) {
+        public override fun onMessage(record: ObjectRecord<String, Snippet>) {
             Thread.sleep(100 * 10)
             println("Id: ${record.id}, Value: ${record.value}, Stream: ${record.stream}, Group: $groupId")
             service.lintSnippet(record.value)
