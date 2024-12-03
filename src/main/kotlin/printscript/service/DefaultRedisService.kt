@@ -2,16 +2,16 @@ package printscript.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import printscript.interfaces.RedisService
+import printscript.interfaces.IRedisService
 import printscript.redis.dto.Snippet
 import java.io.ByteArrayInputStream
 
-@Service
-class RedisService
+@Service("defaultRedisService")
+class DefaultRedisService
     @Autowired
     constructor(
         private val snippetService: PrintScriptService,
-    ) : RedisService {
+    ) : IRedisService {
         override fun formatSnippet(snippet: Snippet): Snippet {
             // Llama al método format de PrintScriptService
             val formattedOutput =
