@@ -46,7 +46,7 @@ class PrintScriptService
         private val formatter: FormatterPS,
         private val formatterService: FormatterRulesService,
         private val linterRulesService: LinterRulesService,
-        @Value("\${asset.url}") private val permissionUrl: String,
+        @Value("\${asset.url}") private val assetUrl: String,
     ) : LanguageService {
         companion object {
             fun objectMapper(): ObjectMapper {
@@ -56,7 +56,7 @@ class PrintScriptService
             }
         }
 
-        val assetServiceApi = WebClient.builder().baseUrl("http://$permissionUrl/v1/asset").build()
+        val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
 
         override fun runScript(
             input: InputStream,

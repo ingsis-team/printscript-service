@@ -1,7 +1,9 @@
 HELP.md
 
 /src/main/resources/application.properties
+
 /src/main
+.env
 ./gradle.properties
 .gradle
 build/

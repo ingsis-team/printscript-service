@@ -6,7 +6,7 @@ import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.stream.StreamReceiver
 import org.springframework.stereotype.Component
-import printscript.interfaces.RedisService
+import printscript.interfaces.IRedisService
 import printscript.redis.dto.Snippet
 import java.time.Duration
 
@@ -17,7 +17,7 @@ class SnippetFormatterConsumer
         redis: ReactiveRedisTemplate<String, String>,
         @Value("\${stream.key.format}") streamKey: String,
         @Value("\${groups.product}") groupId: String,
-        private val service: RedisService,
+        private val service: IRedisService,
     ) : RedisStreamConsumer<Snippet>(streamKey, groupId, redis) {
         override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, Snippet>> {
             return StreamReceiver.StreamReceiverOptions.builder()

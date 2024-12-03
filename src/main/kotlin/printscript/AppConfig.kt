@@ -47,7 +47,7 @@ class AppConfig {
                 ),
             )
         val rulesPath =
-            this::class.java.classLoader.getResource("files/StandardRules.yaml")?.path
+            this::class.java.classLoader.getResource("files/StandardRules.json")?.path
                 ?: throw IllegalArgumentException("Rules file not found")
 
         println("Rules loaded from: $rulesPath")

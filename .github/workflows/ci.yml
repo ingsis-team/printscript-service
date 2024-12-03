@@ -30,14 +30,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-
-
-      - name: Check secrets
-        run: echo "USERNAME_PRINTSCRIPT is ${{ secrets.USERNAME_PRINTSCRIPT }}"
-        env:
-            USERNAME_PRINTSCRIPT: ${{ secrets.USERNAME_PRINTSCRIPT }}
-            GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-
       - name: Build with Gradle
         run: ./gradlew build
         env:

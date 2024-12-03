@@ -18,9 +18,10 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/AnaB2/printscript")
         credentials {
-            username =  System.getenv("USERNAME_PRINTSCRIPT")
-            password =  System.getenv("GIT_TOKEN")
+            username =  "AnaB2"
+            password =  project.findProperty("gpr.token") ?: System.getenv("GIT_TOKEN")
         }
+
     }
 }
 
