@@ -1,20 +1,20 @@
+version: "3.8"
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile
-      secrets:
-        - github_token
-        - github_actor
+      args:
+        - GIT_TOKEN=${GIT_TOKEN}
     container_name: "printscript-api"
     environment:
-      DB_USER: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB}
-      DB_HOST: printscript-db
-      DB_PORT: 5432
-      EXAMPLE_RUNTIME_ENV_VAR: "example runtime env var"
-    env_file: ".env"
+      - GITHUB_ACTOR=${GITHUB_ACTOR}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_HOST=printscript-db
+      - DB_PORT=5432
     depends_on:
       - db
       - redis
@@ -37,6 +37,4 @@ services:
 
 secrets:
   github_token:
-    external: true
-  github_actor:
     external: true

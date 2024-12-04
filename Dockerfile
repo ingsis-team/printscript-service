@@ -1,40 +1,35 @@
+# Base image
 FROM gradle:8.5-jdk21 AS build
 
-# Switch to the root user to install necessary packages.
+# Switch to root user
 USER root
 
-# Update system and install PostgreSQL client, useful for running database commands if needed.
+# Update system and install PostgreSQL client
 RUN apt-get update && apt-get install -y postgresql-client
 
-
-# Copy all project files from the host to the container's working directory.
+# Copy source code and .env to the container
 COPY . /home/gradle/src
+COPY .env /home/gradle/src/.env
 WORKDIR /home/gradle/src
 
-# Build the application, which will create the JAR file in the build/libs directory.
-RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN,required\
-    --mount=type=secret,id=github_actor,env=GITHUB_ACTOR,required \
-    gradle assemble
+# Pass environment variables to Gradle build
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 
-# Expose port 8080 so the application is accessible on this port.
-EXPOSE 8080
 
-# New Relic integration starts here
+# Install dependencies and build the application
+RUN gradle assemble --no-daemon
 
-# Create a directory in the container to store New Relic files.
-# This is where the New Relic agent and configuration file will be located.
+# Create directory for New Relic
 RUN mkdir -p /usr/local/newrelic
 
-# Copy the New Relic agent JAR file (newrelic.jar) from the project into the container.
-# This file enables monitoring of the Java application by New Relic.
+# Add New Relic agent and config
 ADD ./newrelic-java/newrelic/newrelic.jar /usr/local/newrelic/newrelic.jar
-
-# Copy the New Relic configuration file (newrelic.yml) from the project into the container.
-# This file contains settings like the New Relic license key and app name, which are needed for the agent to report data.
 ADD ./newrelic-java/newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
 
-# New Relic integration ends here
+# Expose application port
+EXPOSE 8080
 
-# Run the application using the Java command.
-# The -javaagent option specifies the path to the New Relic agent, enabling monitoring when the application runs.
-ENTRYPOINT ["java","-jar","-javaagent:/usr/local/newrelic/newrelic.jar","/home/gradle/src/build/libs/printscript-service-0.0.1-SNAPSHOT.jar"]
+# Run application
+ENTRYPOINT ["java", "-jar", "-javaagent:/usr/local/newrelic/newrelic.jar", "/home/gradle/src/build/libs/printscript-service-0.0.1-SNAPSHOT.jar"]
+
