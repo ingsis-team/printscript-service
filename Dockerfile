@@ -13,8 +13,10 @@ COPY .env /home/gradle/src/.env
 WORKDIR /home/gradle/src
 
 # Pass environment variables to Gradle build
-ARG GITHUB_TOKEN
-ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+# Pass environment variables to Gradle build
+RUN --mount=type=secret,id=github_token \
+    GITHUB_TOKEN=$(cat /run/secrets/github_token) \
+    gradle assemble --no-daemon
 
 
 # Install dependencies and build the application

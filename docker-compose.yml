@@ -4,12 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - GIT_TOKEN=${GIT_TOKEN}
+      secrets:
+        - github_token
     container_name: "printscript-api"
     environment:
-      - GITHUB_ACTOR=${GITHUB_ACTOR}
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
       - DB_USER=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}
@@ -37,4 +35,4 @@ services:
 
 secrets:
   github_token:
-    external: true
+    file: ./secrets/github_token.txt
