@@ -34,4 +34,4 @@ jobs:
         run: ./gradlew build
         env:
           USERNAME_PRINTSCRIPT: ${{secrets.USERNAME_PRINTSCRIPT }}
-          GIT_TOKEN: ${{secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GIT_TOKEN }}

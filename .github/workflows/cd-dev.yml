@@ -35,4 +35,4 @@ jobs:
 
           push: true
     env:
-      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
