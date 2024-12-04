@@ -1,22 +1,19 @@
 services:
   api:
-    container_name: "printscript-api"
     build:
       context: .
       dockerfile: Dockerfile
       secrets:
         - github_token
         - github_actor
-
-
-    ports:
-      - 8083:8080
+    container_name: "printscript-api"
     environment:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: ${POSTGRES_DB}
       DB_HOST: printscript-db
       DB_PORT: 5432
+      EXAMPLE_RUNTIME_ENV_VAR: "example runtime env var"
     env_file: ".env"
     depends_on:
       - db
@@ -40,7 +37,6 @@ services:
 
 secrets:
   github_token:
-    file: ./secrets/github_token.txt
-
+    external: true
   github_actor:
-    file: ./secrets/github_actor.txt
+    external: true

@@ -12,10 +12,8 @@ COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 
 # Build the application, which will create the JAR file in the build/libs directory.
-RUN --mount=type=secret,id=github_token \
-    --mount=type=secret,id=github_actor \
-    GITHUB_TOKEN=$(cat /run/secrets/github_token) \
-    GITHUB_ACTOR=$(cat /run/secrets/github_actor) \
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN,required\
+    --mount=type=secret,id=github_actor,env=GITHUB_ACTOR,required \
     gradle assemble
 
 # Expose port 8080 so the application is accessible on this port.
