@@ -4,9 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        USERNAME: ${USERNAME}
-        GIT_TOKEN: ${GIT_TOKEN}
+      secrets:
+        - github_token
+        - github_actor
 
 
     ports:
@@ -37,3 +37,10 @@ services:
     image: redis:6-alpine
     ports:
       - "6379:6379"
+
+secrets:
+  github_token:
+    file: ./secrets/github_token.txt
+
+  github_actor:
+    file: ./secrets/github_actor.txt

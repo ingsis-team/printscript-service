@@ -6,21 +6,17 @@ USER root
 # Update system and install PostgreSQL client, useful for running database commands if needed.
 RUN apt-get update && apt-get install -y postgresql-client
 
-# Set build arguments for GitHub credentials.
-ARG GITHUB_ACTOR
-ARG GITHUB_TOKEN
-
-# Set environment variables for GitHub credentials.
-ENV GITHUB_ACTOR=${GITHUB_ACTOR}
-ENV GITHUB_TOKEN=${GITHUB_TOKEN}
-
 
 # Copy all project files from the host to the container's working directory.
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 
 # Build the application, which will create the JAR file in the build/libs directory.
-RUN gradle assemble
+RUN --mount=type=secret,id=github_token \
+    --mount=type=secret,id=github_actor \
+    GITHUB_TOKEN=$(cat /run/secrets/github_token) \
+    GITHUB_ACTOR=$(cat /run/secrets/github_actor) \
+    gradle assemble
 
 # Expose port 8080 so the application is accessible on this port.
 EXPOSE 8080
