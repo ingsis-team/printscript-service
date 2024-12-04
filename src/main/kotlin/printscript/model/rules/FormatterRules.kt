@@ -20,8 +20,14 @@ class FormatterRules(
     var spaceAfterColon: Boolean = true,
     @Column(name = "spaceAroundEquals")
     var spaceAroundEquals: Boolean = true,
+    @Column(name = "lineBreak")
+    var lineBreak: Int = 1,
     @Column(name = "lineBreakPrintln")
     var lineBreakPrintln: Int = 1,
     @Column(name = "conditionalIndentation")
     var conditionalIndentation: Int = 4,
-)
+) {
+    override fun toString(): String {
+        return "Los valores son userId: $userId, spaceBC: $spaceBeforeColon, spaceAC:$spaceAfterColon, spaceAE:$spaceAroundEquals,"
+    }
+}

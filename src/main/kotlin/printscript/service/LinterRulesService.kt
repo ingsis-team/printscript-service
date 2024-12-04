@@ -1,5 +1,6 @@
 package printscript.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import printscript.model.dto.LinterRulesFileDTO
@@ -11,6 +12,8 @@ import java.util.UUID
 class LinterRulesService(
     @Autowired private var linterRulesRepository: LinterRulesRepository,
 ) {
+    private val logger = LoggerFactory.getLogger(LinterRulesService::class.java)
+
     fun getLinterRulesByUserId(
         userId: String,
         correlationId: UUID,
@@ -23,12 +26,14 @@ class LinterRulesService(
         userId: String,
     ): LinterRulesFileDTO {
         try {
+            logger.info("Updating linter rules for userId: $userId")
             var rules = findOrCreateByUser(userId)
             rules.identifierFormat = linterRules.identifier_format
             rules.enableInputOnly = linterRules.enableInputOnly
             rules.enablePrintOnly = linterRules.enablePrintOnly
 
             val savedRules = linterRulesRepository.save(rules)
+            logger.info("Linter rules updated successfully for userId: $userId")
 
             return LinterRulesFileDTO(
                 savedRules.userId ?: "",
@@ -37,6 +42,7 @@ class LinterRulesService(
                 savedRules.enablePrintOnly,
             )
         } catch (e: Exception) {
+            logger.error("Error updating linter rules for userId: $userId", e)
             return LinterRulesFileDTO(
                 userId,
                 "camelcase",

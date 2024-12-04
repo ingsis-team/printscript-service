@@ -1,5 +1,6 @@
 package printscript.redis.route
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -24,17 +25,21 @@ class RedisController
         private val formatterService: FormatterRulesService,
         private val linterRulesService: LinterRulesService,
     ) {
+        private val logger = LoggerFactory.getLogger(RedisController::class.java)
+
         @PutMapping("/format")
         suspend fun changeAndFormatRules(
             @RequestBody data: ChangeRulesDTO,
         ) {
-            println("changerulesdto: ${data.rules.forEach(::println)}")
+            logger.info("changeRulesDTO: ${data.rules.forEach(::println)}")
+            logger.info("Received data: $data")
 
-            val spaceBeforeColon = data.rules.find { it.name == "SpaceBeforeColon" }?.value as? Boolean ?: false
-            val spaceAfterColon = data.rules.find { it.name == "SpaceAfterColon" }?.value as? Boolean ?: false
-            val spaceAroundEquals = data.rules.find { it.name == "SpaceAroundEquals" }?.value as? Boolean ?: false
-            val lineBreakPrintln = data.rules.find { it.name == "LineBreakPrintln" }?.value as? Int ?: 0
-            val conditionalIndentation = data.rules.find { it.name == "ConditionalIndentation" }?.value as? Int ?: 0
+            val spaceBeforeColon = data.rules.find { it.name == "spaceBeforeColon" }?.isActive ?: false
+            val spaceAfterColon = data.rules.find { it.name == "spaceAfterColon" }?.isActive ?: false
+            val spaceAroundEquals = data.rules.find { it.name == "spaceAroundEquals" }?.isActive ?: false
+            val lineBreak = data.rules.find { it.name == "lineBreak" }?.value as? Int ?: 0
+            val lineBreakPrintln = data.rules.find { it.name == "lineBreakPrintln" }?.value as? Int ?: 0
+            val conditionalIndentation = data.rules.find { it.name == "conditionalIndentation" }?.value as? Int ?: 0
 
             val formatterDto =
                 FormatterRulesFileDTO(
@@ -42,33 +47,37 @@ class RedisController
                     spaceBeforeColon,
                     spaceAfterColon,
                     spaceAroundEquals,
+                    lineBreak,
                     lineBreakPrintln,
                     conditionalIndentation,
                 )
-            println(
+            logger.info(
                 "formatterDto: userId=${formatterDto.userId}, spaceBeforeColon=${formatterDto.spaceBeforeColon}," +
                     " spaceAfterColon=${formatterDto.spaceAfterColon}, " +
-                    "spaceAroundEquals=${formatterDto.spaceAroundEquals}," +
+                    "spaceAroundEquals=${formatterDto.spaceAroundEquals}, lineBreak=${formatterDto.lineBreak}," +
                     " lineBreakPrintln=${formatterDto.lineBreakPrintln}," +
                     " conditionalIndentation=${formatterDto.conditionalIndentation}",
             )
 
             formatterService.updateFormatterRules(formatterDto, data.userId)
-            println("Rules updated")
+            logger.info("Rules updated")
             data.snippets.forEach {
-                val snippet = Snippet(it.snippetId, it.input, data.userId, data.correlationId)
+                val snippet = Snippet(data.userId, it.snippetId, it.input, data.correlationId)
                 formatProducer.publishEvent(snippet)
             }
-            println("Rules published")
+            logger.info("Rules published")
         }
 
         @PutMapping("lint")
         suspend fun changeAndLintRules(
             @RequestBody data: ChangeRulesDTO,
         ) {
+            logger.info("changeRulesDTO1: ${data.rules.forEach(::println)}")
+            logger.info("Received data2: $data")
+
             val identifierFormat = data.rules.find { it.name == "identifierFormat" }?.value as? String ?: ""
-            val enablePrintOnly = data.rules.find { it.name == "enablePrintOnly" }?.value as? Boolean ?: false
-            val enableInputOnly = data.rules.find { it.name == "enableInputOnly" }?.value as? Boolean ?: false
+            val enablePrintOnly = data.rules.find { it.name == "enablePrintOnly" }?.isActive ?: false
+            val enableInputOnly = data.rules.find { it.name == "enableInputOnly" }?.isActive ?: false
 
             val linterDto =
                 LinterRulesFileDTO(
@@ -77,10 +86,20 @@ class RedisController
                     enablePrintOnly,
                     enableInputOnly,
                 )
+
+            logger.info(
+                "linterDto: userId=${linterDto.userId}, identifierFormat=${linterDto.identifier_format}," +
+                    " enablePrintOnly=${linterDto.enablePrintOnly}, " +
+                    "enableInputOnly=${linterDto.enableInputOnly}",
+            )
+
             linterRulesService.updateLinterRules(linterDto, data.userId)
+
+            logger.info("Rules updated1")
             data.snippets.map {
-                val snippet = Snippet(it.snippetId, it.input, data.userId, data.correlationId)
+                val snippet = Snippet(data.userId, it.snippetId, it.input, data.correlationId)
                 lintProducer.publishEvent(snippet)
             }
+            logger.info("Rules published2")
         }
     }

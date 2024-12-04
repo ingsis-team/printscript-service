@@ -1,5 +1,6 @@
 package printscript.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import printscript.interfaces.IRedisService
@@ -12,8 +13,11 @@ class DefaultRedisService
     constructor(
         private val snippetService: PrintScriptService,
     ) : IRedisService {
+        private val logger = LoggerFactory.getLogger(DefaultRedisService::class.java)
+
         override fun formatSnippet(snippet: Snippet): Snippet {
-            // Llama al método format de PrintScriptService
+            logger.info("Los datos del snippet son: $snippet")
+
             val formattedOutput =
                 snippetService.format(
                     snippet.id,
@@ -22,6 +26,7 @@ class DefaultRedisService
                     snippet.userId,
                     snippet.correlationID,
                 )
+
             println("Estoy formateando un snippet")
 
             // Crea un nuevo objeto Snippet con el contenido formateado
@@ -39,9 +44,8 @@ class DefaultRedisService
         }
 
         override fun lintSnippet(snippet: Snippet): Snippet {
-            println("Estoy linteando un snippet")
+            logger.info("Estoy linteando un snippet")
 
-            // Llama al método lint de PrintScriptService
             val lintResults =
                 snippetService.lint(
                     ByteArrayInputStream(snippet.content.toByteArray()),

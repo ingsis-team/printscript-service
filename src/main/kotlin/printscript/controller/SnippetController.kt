@@ -90,11 +90,26 @@ class SnippetController(
         val formatterRules = formaterRulesService.getFormatterRulesByUserId(userId, correlationId)
         val rulesList = mutableListOf<Rule>()
 
-        rulesList.add(Rule(id = "1", name = "spaceBeforeColon", isActive = true, value = formatterRules.spaceBeforeColon))
-        rulesList.add(Rule(id = "2", name = "spaceAfterColon", isActive = true, value = formatterRules.spaceAfterColon))
-        rulesList.add(Rule(id = "3", name = "spaceAroundEquals", isActive = true, value = formatterRules.spaceAroundEquals))
-        rulesList.add(Rule(id = "4", name = "lineBreakPrintln", isActive = true, value = formatterRules.lineBreakPrintln))
-        rulesList.add(Rule(id = "5", name = "conditionalIndentation", isActive = true, value = formatterRules.conditionalIndentation))
+        rulesList.add(Rule(id = "1", name = "spaceBeforeColon", isActive = formatterRules.spaceBeforeColon, value = false))
+        rulesList.add(Rule(id = "2", name = "spaceAfterColon", isActive = formatterRules.spaceAfterColon, value = false))
+        rulesList.add(Rule(id = "3", name = "spaceAroundEquals", isActive = formatterRules.spaceAroundEquals, value = false))
+        rulesList.add(Rule(id = "4", name = "lineBreak", isActive = formatterRules.lineBreak != 0, value = formatterRules.lineBreak))
+        rulesList.add(
+            Rule(
+                id = "5",
+                name = "lineBreakPrintln",
+                isActive = formatterRules.lineBreakPrintln != 0,
+                value = formatterRules.lineBreakPrintln,
+            ),
+        )
+        rulesList.add(
+            Rule(
+                id = "6",
+                name = "conditionalIndentation",
+                isActive = formatterRules.conditionalIndentation != 0,
+                value = formatterRules.conditionalIndentation,
+            ),
+        )
 
         return ResponseEntity.ok(rulesList)
     }
@@ -107,9 +122,11 @@ class SnippetController(
         val linterRules = linterRulesService.getLinterRulesByUserId(userId, correlationId)
         val rulesList = mutableListOf<Rule>()
 
-        rulesList.add(Rule(id = "1", name = "identifierFormat", isActive = true, value = linterRules.identifierFormat))
-        rulesList.add(Rule(id = "2", name = "enablePrintOnly", isActive = true, value = linterRules.enablePrintOnly))
-        rulesList.add(Rule(id = "3", name = "enableInputOnly", isActive = true, value = linterRules.enableInputOnly))
+        rulesList.add(
+            Rule(id = "1", name = "identifierFormat", isActive = linterRules.identifierFormat != "", value = linterRules.identifierFormat),
+        )
+        rulesList.add(Rule(id = "2", name = "enablePrintOnly", isActive = linterRules.enablePrintOnly, value = false))
+        rulesList.add(Rule(id = "3", name = "enableInputOnly", isActive = linterRules.enableInputOnly, value = false))
 
         return ResponseEntity.ok(rulesList)
     }

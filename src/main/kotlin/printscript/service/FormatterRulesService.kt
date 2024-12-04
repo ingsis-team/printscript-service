@@ -1,5 +1,6 @@
 package printscript.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import printscript.model.dto.FormatterRulesFileDTO
@@ -11,11 +12,13 @@ import java.util.UUID
 class FormatterRulesService(
     @Autowired private var formatterRulesRepository: FormatterRulesRepository,
 ) {
+    private val logger = LoggerFactory.getLogger(FormatterRulesService::class.java)
+
     fun getFormatterRulesByUserId(
         userId: String,
         correlationId: UUID,
     ): FormatterRules {
-        println("userId: $userId")
+        logger.info("userId: $userId")
         return findOrCreateByUser(userId)
     }
 
@@ -24,21 +27,24 @@ class FormatterRulesService(
         userId: String,
     ): FormatterRulesFileDTO {
         try {
-            println("userId: $userId")
+            logger.info("userId: $userId")
             val rules = findOrCreateByUser(userId)
-            print("old rules: $rules")
+            logger.info("old rules: $rules")
             rules.spaceBeforeColon = formatterRules.spaceBeforeColon
             rules.spaceAfterColon = formatterRules.spaceAfterColon
             rules.spaceAroundEquals = formatterRules.spaceAroundEquals
+            rules.lineBreak = formatterRules.lineBreak
             rules.lineBreakPrintln = formatterRules.lineBreakPrintln
             rules.conditionalIndentation = formatterRules.conditionalIndentation
+
             formatterRulesRepository.save(rules)
-            println(rules)
+            logger.info("$rules")
             return FormatterRulesFileDTO(
                 userId,
                 rules.spaceBeforeColon,
                 rules.spaceAfterColon,
                 rules.spaceAroundEquals,
+                rules.lineBreak,
                 rules.lineBreakPrintln,
                 rules.conditionalIndentation,
             )
@@ -49,9 +55,9 @@ class FormatterRulesService(
 
     private fun findOrCreateByUser(userId: String): FormatterRules {
         val rules = formatterRulesRepository.findByUserId(userId).orElse(null)
-        println("rules: $rules")
+        logger.info("rules: $rules")
         if (rules == null) {
-            println("User not found")
+            logger.info("User not found")
             return createUserById(userId)
         }
         return rules
@@ -64,6 +70,7 @@ class FormatterRulesService(
                 spaceBeforeColon = false,
                 spaceAfterColon = false,
                 spaceAroundEquals = false,
+                lineBreak = 0,
                 lineBreakPrintln = 0,
                 conditionalIndentation = 0,
             )

@@ -16,6 +16,7 @@ import lexer.Lexer
 import lexer.TokenMapper
 import linter.Linter
 import linter.LinterVersion
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
@@ -48,6 +49,8 @@ class PrintScriptService
         private val linterRulesService: LinterRulesService,
         @Value("\${asset.url}") private val assetUrl: String,
     ) : LanguageService {
+        private val logger = LoggerFactory.getLogger(PrintScriptService::class.java)
+
         companion object {
             fun objectMapper(): ObjectMapper {
                 val mapper = ObjectMapper()
@@ -127,7 +130,8 @@ class PrintScriptService
             userId: String,
             correlationId: UUID,
         ): MutableList<SCAOutput> {
-            val defaultPath = "./$userId-linterRules.json"
+            val sanitizedUserId = sanitizeUserId(userId)
+            val defaultPath = "./$sanitizedUserId-linterRules.json"
 
             try {
                 val lintRules = linterRulesService.getLinterRulesByUserId(userId, correlationId)
@@ -184,7 +188,9 @@ class PrintScriptService
             userId: String,
             correlationId: UUID,
         ): Output {
-            val defaultPath = "./$userId-formatterRules.json"
+            val sanitizedUserId = sanitizeUserId(userId)
+
+            val defaultPath = "./$sanitizedUserId-formatterRules.json"
             try {
                 // Obtener reglas de formato del servicio
                 val formatterRules = formatterService.getFormatterRulesByUserId(userId, correlationId)
@@ -193,6 +199,7 @@ class PrintScriptService
                         formatterRules.spaceBeforeColon,
                         formatterRules.spaceAfterColon,
                         formatterRules.spaceAroundEquals,
+                        formatterRules.lineBreak,
                         formatterRules.lineBreakPrintln,
                         formatterRules.conditionalIndentation,
                     )
@@ -269,7 +276,10 @@ class PrintScriptService
             }
         }
 
-        // Método para actualizar contenido en el bucket
+        fun sanitizeUserId(userId: String): String {
+            return userId.replace(Regex("[^a-zA-Z0-9.-]"), "_")
+        }
+
         fun updateOnBucket(
             key: String,
             content: String,
