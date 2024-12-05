@@ -24,5 +24,5 @@ ADD ./newrelic-java/newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
 
 
 
-ENTRYPOINT ["java", "-jar", "-javaagent:/usr/local/newrelic/newrelic.jar", "/home/gradle/src/build/libs/printscript-service-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "-javaagent:/usr/local/newrelic/newrelic.jar", "/home/gradle/src/build/libs/PrintscriptService-0.0.1-SNAPSHOT.jar"]
 
