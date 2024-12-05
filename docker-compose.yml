@@ -4,8 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      secrets:
-        - github_token
+
     container_name: "printscript-api"
     environment:
       - DB_USER=${POSTGRES_USER}
@@ -33,6 +32,4 @@ services:
     ports:
       - "6379:6379"
 
-secrets:
-  github_token:
-    file: ./secrets/github_token.txt
+
