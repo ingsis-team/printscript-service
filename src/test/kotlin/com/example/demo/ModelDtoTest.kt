@@ -20,6 +20,7 @@ class ModelDtoTest {
                 spaceBeforeColon = true,
                 spaceAfterColon = true,
                 spaceAroundEquals = true,
+                lineBreak = 1,
                 lineBreakPrintln = 15,
                 conditionalIndentation = 4,
             )
@@ -39,6 +40,7 @@ class ModelDtoTest {
                 spaceBeforeColon = true,
                 spaceAfterColon = true,
                 spaceAroundEquals = true,
+                lineBreak = 1,
                 lineBreakPrintln = 15,
                 conditionalIndentation = 4,
             )

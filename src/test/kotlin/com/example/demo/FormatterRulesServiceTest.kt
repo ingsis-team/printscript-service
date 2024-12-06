@@ -67,6 +67,7 @@ class FormatterRulesServiceTest {
                 spaceBeforeColon = true,
                 spaceAfterColon = true,
                 spaceAroundEquals = true,
+                lineBreak = 1,
                 lineBreakPrintln = 2,
                 conditionalIndentation = 4,
             )
