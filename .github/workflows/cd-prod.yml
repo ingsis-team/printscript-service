@@ -31,7 +31,9 @@ jobs:
             ghcr.io/ingsis-team/ingsis-printscript-service-prod:latest
           build-args: |
             "USERNAME=${{ secrets.USERNAME }}"
-            "GIT_TOKEN=${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}"
+            "GIT1_TOKEN=${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}"
+            "USERNAME_PRINTSCRIPT=${{secrets.USERNAME_PRINTSCRIPT}}"
+            "GIT_TOKEN=${{secrets.GIT_TOKEN}}
 
           push: true
     env:
