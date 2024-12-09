@@ -6,7 +6,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
     id 'org.jlleitschuh.gradle.ktlint' version '12.1.1'
     id 'org.jetbrains.kotlinx.kover' version '0.9.0-RC'
-
+    id 'maven-publish'
 }
 
 group = 'com.example'
@@ -19,8 +19,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/AnaB2/printscript")
         credentials {
-            username =  System.getenv("USERNAME1")
-            password =  System.getenv("TOKEN")
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME1")
+            password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
         }
     }
 }
