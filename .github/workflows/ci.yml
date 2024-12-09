@@ -29,5 +29,4 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          USERNAME1: ${{secrets.USERNAME_PRINTSCRIPT }}
-          TOKEN: ${{secrets.GIT_TOKEN || secrets.GITHUB_TOKEN}}
+          TOKEN: ${{secrets.ORG_DOCKER_PACKAGES_SECRET}}
