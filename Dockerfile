@@ -9,6 +9,8 @@ ARG TOKEN
 ENV TOKEN=$TOKEN
 
 RUN gradle assemble
+
+
 RUN unset TOKEN
 
 FROM amazoncorretto:21.0.4
