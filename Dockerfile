@@ -21,7 +21,7 @@ RUN mkdir -p /usr/local/newrelic
 
 ADD ./newrelic-java/newrelic/newrelic.jar /usr/local/newrelic/newrelic.jar
 ADD ./newrelic-java/newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
-COPY --from=build /home/gradle/src/build/libs/PrintscriptService-0.0.1-SNAPSHOT.jar ./PrintscriptService-0.0.1-SNAPSHOT.jar
+COPY --from=build /home/gradle/src/build/libs/PrintScriptService-0.0.1-SNAPSHOT.jar ./PrintScriptService-0.0.1-SNAPSHOT.jar
 
 
 ENTRYPOINT ["java", "-jar", "-javaagent:/usr/local/newrelic/newrelic.jar", "./PrintscriptService-0.0.1-SNAPSHOT.jar"]
