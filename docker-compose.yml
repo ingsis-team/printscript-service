@@ -4,9 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        USERNAME_PRINTSCRIPT: ${USERNAME_PRINTSCRIPT}
-        GIT_TOKEN: ${GIT_TOKEN}
 
     container_name: "printscript-api"
     environment:
@@ -15,8 +12,6 @@ services:
       - DB_NAME=${POSTGRES_DB}
       - DB_HOST=printscript-db
       - DB_PORT=5432
-      - USERNAME_PRINTSCRIPT=${USERNAME_PRINTSCRIPT}
-      - GIT_TOKEN=${GIT_TOKEN}
     depends_on:
       - db
       - redis
