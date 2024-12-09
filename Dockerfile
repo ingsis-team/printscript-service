@@ -4,15 +4,12 @@ FROM gradle:8.5-jdk21 AS build
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 
-ARG USERNAME
-ARG TOKEN
 
-ENV USERNAME=$USERNAME
+ARG TOKEN
 ENV TOKEN=$TOKEN
 
-
 RUN gradle assemble
-RUN unset USERNAME TOKEN
+RUN unset TOKEN
 
 FROM amazoncorretto:21.0.4
 EXPOSE 8080

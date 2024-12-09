@@ -30,11 +30,9 @@ jobs:
           tags: |
             ghcr.io/ingsis-team/ingsis-printscript-service-prod:latest
           build-args: |
-            USERNAME=${{secrets.USERNAME }}
             TOKEN=${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
             
 
           push: true
     env:
       TOKEN: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
-      USERNAME: ${{secrets.USERNAME }}
