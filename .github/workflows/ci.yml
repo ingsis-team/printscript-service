@@ -30,4 +30,4 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          TOKEN: ${{ secrets.GIT_TOKEN || secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET}}
