@@ -20,7 +20,7 @@ repositories {
         url = uri("https://maven.pkg.github.com/AnaB2/printscript")
         credentials {
             username = "AnaB2"
-            password = project.findProperty("gpr.token")?:System.getenv("TOKEN1")
+            password = project.findProperty("gpr.token")?:System.getenv("TOKEN")
         }
     }
 }
