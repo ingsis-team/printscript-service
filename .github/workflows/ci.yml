@@ -22,13 +22,18 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Make gradlew executable
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Authenticate to GitHub Packages
-        run: echo "//maven.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" > ~/.gradle/gradle.properties
+      - name: Gradle Clean
+        run: ./gradlew clean
+
+      - name: Authenticate to GitHub Docker Packages
+        run: echo "$ORG_DOCKER_PACKAGES_SECRET" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+        env:
+          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
 
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          TOKEN: ${{ secrets.GIT_TOKEN }}
+          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
