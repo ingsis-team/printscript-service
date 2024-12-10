@@ -9,6 +9,7 @@ on:
     branches:
       - main
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,13 +23,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Make gradlew executable
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Authenticate to GitHub Packages
-        run: echo "//maven.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" > ~/.gradle/gradle.properties
-
+      - name: Gradle Clean
+        run: ./gradlew clean
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          TOKEN: ${{ secrets.GIT_TOKEN }}
+          TOKEN: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET}}
