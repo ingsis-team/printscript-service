@@ -5,6 +5,10 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    ports:
+      - "8083:8080"
+
+
     container_name: "printscript-api"
     environment:
       - DB_USER=${POSTGRES_USER}
@@ -15,8 +19,6 @@ services:
     depends_on:
       - db
       - redis
-    ports:
-      - "8083:8080"
 
   db:
     container_name: "printscript-db"
