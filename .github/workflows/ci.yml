@@ -29,4 +29,4 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          TOKEN: ${{secrets.GIT_TOKEN}}
+          TOKEN1: ${{secrets.GIT_TOKEN}}
