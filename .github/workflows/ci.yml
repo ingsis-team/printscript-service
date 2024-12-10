@@ -9,6 +9,7 @@ on:
     branches:
       - main
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,18 +23,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
+      - name: Make gradlew executable
         run: chmod +x gradlew
-
-      - name: Gradle Clean
-        run: ./gradlew clean
-
-      - name: Authenticate to GitHub Docker Packages
-        run: echo "$GIT_TOKEN" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-        env:
-          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.GIT_TOKEN }}
 
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.GIT_TOKEN }}
+          TOKEN: ${{secrets.GIT_TOKEN}}
