@@ -29,11 +29,11 @@ jobs:
         run: ./gradlew clean
 
       - name: Authenticate to GitHub Docker Packages
-        run: echo "$ORG_DOCKER_PACKAGES_SECRET" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+        run: echo "$GIT_TOKEN" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
         env:
-          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
+          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.GIT_TOKEN }}
 
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
+          ORG_DOCKER_PACKAGES_SECRET: ${{ secrets.GIT_TOKEN }}
