@@ -17,9 +17,9 @@ repositories {
     mavenCentral()
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/AnaB2/printscript")
+        url = uri("https://maven.pkg.github.com/ingsis-team/printscript")
         credentials {
-            username = "AnaB2"
+            username = "ingsis-team"
             password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
         }
     }
