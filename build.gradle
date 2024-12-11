@@ -92,3 +92,12 @@ tasks.register('installPreCommitHook') {
         println("No .git/hooks directory found. Please initialize a git repository.")
     }
 }
+
+task printUsernameTokenEnvVars {
+    doLast {
+        print("DON'T DO THIS IN ANY ENVIRONMENT!. THIS IS JUST FOR DEMONSTRATION!\n")
+        print("------------------------------------------------------------------\n")
+        print("Username: ${System.getenv("USERNAME")}\n")
+        print("Token: ${System.getenv("TOKEN")}")
+    }
+}
