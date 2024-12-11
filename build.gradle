@@ -19,7 +19,7 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/ingsis-team/printscript")
         credentials {
-            username = System.getenv("USERNAME")
+            username = "ingsis-team"
             password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
         }
     }
@@ -93,11 +93,3 @@ tasks.register('installPreCommitHook') {
     }
 }
 
-task printUsernameTokenEnvVars {
-    doLast {
-        print("DON'T DO THIS IN ANY ENVIRONMENT!. THIS IS JUST FOR DEMONSTRATION!\n")
-        print("------------------------------------------------------------------\n")
-        print("Username: ${System.getenv("USERNAME")}\n")
-        print("Token: ${System.getenv("TOKEN")}")
-    }
-}

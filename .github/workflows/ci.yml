@@ -29,14 +29,7 @@ jobs:
         run: ./gradlew clean
 
 
-      - name: Run print task
-        run: ./gradlew printUsernameTokenEnvVars
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          TOKEN: ${{ secrets.GIT_TOKEN }}
-
       - name: Build with Gradle
+        run: ./gradlew build
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-          USERNAME: ${{ secrets.USERNAME }}
-        run: ./gradlew build
