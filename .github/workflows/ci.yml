@@ -28,9 +28,6 @@ jobs:
       - name: Gradle Clean
         run: ./gradlew clean
 
-      - name: Posibles Errores
-        run: ./gradlew compileKotlin --info
-
       - name: Build with Gradle
         run: ./gradlew build
         env:
