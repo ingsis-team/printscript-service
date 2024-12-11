@@ -215,6 +215,7 @@ class PrintScriptService
                             "spaceBeforeColon" to Boolean::class,
                             "spaceAfterColon" to Boolean::class,
                             "spaceAroundEquals" to Boolean::class,
+                            "lineBreak" to Int::class,
                             "lineBreakPrintln" to Int::class,
                             "conditionalIndentation" to Int::class,
                         ),
@@ -227,14 +228,14 @@ class PrintScriptService
                     when (Declversion) {
                         "1.0" -> listOf("let")
                         "1.1" -> listOf("let", "const")
-                        else -> throw IllegalArgumentException("Versión no soportada: $version")
+                        else -> throw IllegalArgumentException("Versión no soportada: $Declversion")
                     }
                 }
-                val getAllowedDataTypes = { Declversion: String ->
-                    when (version) {
+                val getAllowedDataTypes = { Allowedversion: String ->
+                    when (Allowedversion) {
                         "1.0" -> listOf("number", "string")
                         "1.1" -> listOf("number", "string", "boolean")
-                        else -> throw IllegalArgumentException("Versión no soportada: $version")
+                        else -> throw IllegalArgumentException("Versión no soportada: $Allowedversion")
                     }
                 }
 

@@ -24,8 +24,8 @@ import java.util.UUID
 @RestController
 class SnippetController(
     private val snippetProcessingService: SnippetProcessingService,
-    private val linterRulesService: LinterRulesService,
-    private val formaterRulesService: FormatterRulesService,
+    val linterRulesService: LinterRulesService,
+    val formaterRulesService: FormatterRulesService,
 ) {
     @PostMapping("/validate")
     fun validateSnippet(

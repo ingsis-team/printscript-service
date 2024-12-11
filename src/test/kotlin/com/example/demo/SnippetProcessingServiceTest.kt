@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
+import org.mockito.Mockito.`when`
 import org.springframework.web.context.WebApplicationContext
+import printscript.service.PrintScriptService
 import printscript.service.SnippetProcessingService
 
 class SnippetProcessingServiceTest {
@@ -19,16 +22,16 @@ class SnippetProcessingServiceTest {
         snippetProcessingService = SnippetProcessingService(applicationContext)
     }
 
-//    @Test
-//    fun `selectService should return PrintScriptService for language printscript`() {
-//        val printScriptService = mock(PrintScriptService::class.java)
-//        `when`(applicationContext.getBean(PrintScriptService::class.java)).thenReturn(printScriptService)
-//
-//        val result = snippetProcessingService.selectService("printscript")
-//
-//        assertEquals(printScriptService, result)
-//        verify(applicationContext).getBean(PrintScriptService::class.java)
-//    }
+    @Test
+    fun `selectService should return PrintScriptService for language printscript`() {
+        val printScriptService = mock(PrintScriptService::class.java)
+        `when`(applicationContext.getBean(PrintScriptService::class.java)).thenReturn(printScriptService)
+
+        val result = snippetProcessingService.selectService("printscript")
+
+        assertEquals(printScriptService, result)
+        verify(applicationContext).getBean(PrintScriptService::class.java)
+    }
 
     @Test
     fun `selectService should throw exception for unsupported language`() {

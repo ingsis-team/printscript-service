@@ -35,12 +35,14 @@ class LinterRulesService(
             val savedRules = linterRulesRepository.save(rules)
             logger.info("Linter rules updated successfully for userId: $userId")
 
-            return LinterRulesFileDTO(
-                savedRules.userId ?: "",
-                savedRules.identifierFormat ?: "",
-                savedRules.enableInputOnly,
-                savedRules.enablePrintOnly,
-            )
+            return savedRules.userId?.let {
+                LinterRulesFileDTO(
+                    it,
+                    savedRules.identifierFormat,
+                    savedRules.enableInputOnly,
+                    savedRules.enablePrintOnly,
+                )
+            }!!
         } catch (e: Exception) {
             logger.error("Error updating linter rules for userId: $userId", e)
             return LinterRulesFileDTO(

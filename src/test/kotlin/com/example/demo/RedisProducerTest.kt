@@ -34,56 +34,59 @@ class SnippetLintProducer(streamKey: String, redis: ReactiveRedisTemplate<String
 }
 
 class RedisProducerTest {
-//    @Test
-//    fun `test RedisStreamProducer emit method`() {
-//        val redisTemplate =
-//            ReactiveRedisTemplate(
-//                null,
-//                RedisSerializationContext.newSerializationContext<String, String>()
-//                    .key(StringRedisSerializer())
-//                    .value(StringRedisSerializer())
-//                    .build(),
-//            )
-//        val producer = object : RedisStreamProducer("testStream", redisTemplate) {}
-//
-//        val testValue = "TestValue"
-//        val record = StreamRecords.newRecord().ofObject(testValue).withStreamKey("testStream")
-//        val result: Mono<RecordId> = producer.emit(testValue)
-//
-//        assertTrue(result is Mono<RecordId>, "emit should return Mono<RecordId>")
-//    }
-//
-//    @Test
-//    fun `test SnippetFormatterProducer publishEvent`() =
-//        runBlocking {
-//            val redisTemplate =
-//                ReactiveRedisTemplate(
-//                    null,
-//                    RedisSerializationContext.newSerializationContext<String, String>()
-//                        .key(StringRedisSerializer())
-//                        .value(StringRedisSerializer())
-//                        .build(),
-//                )
-//            val producer = SnippetFormatterProducer("snippetFormatStream", redisTemplate)
-//
-//            val snippet = Snippet("user1", "snippet1", "content", UUID.randomUUID())
-//            producer.publishEvent(snippet)
-//        }
-//
-//    @Test
-//    fun `test SnippetLintProducer publishEvent`() =
-//        runBlocking {
-//            val redisTemplate =
-//                ReactiveRedisTemplate(
-//                    null,
-//                    RedisSerializationContext.newSerializationContext<String, String>()
-//                        .key(StringRedisSerializer())
-//                        .value(StringRedisSerializer())
-//                        .build(),
-//                )
-//            val producer = SnippetLintProducer("snippetLintStream", redisTemplate)
-//
-//            val snippet = Snippet("user2", "snippet2", "code content", UUID.randomUUID())
-//            producer.publishEvent(snippet)
-//        }
+    /*
+    @Test
+    fun `test RedisStreamProducer emit method`() {
+        val redisTemplate =
+            ReactiveRedisTemplate(
+                null,
+                RedisSerializationContext.newSerializationContext<String, String>()
+                    .key(StringRedisSerializer())
+                    .value(StringRedisSerializer())
+                    .build(),
+            )
+        val producer = object : RedisStreamProducer("testStream", redisTemplate) {}
+
+        val testValue = "TestValue"
+        val record = StreamRecords.newRecord().ofObject(testValue).withStreamKey("testStream")
+        val result: Mono<RecordId> = producer.emit(testValue)
+
+        assertTrue(result is Mono<RecordId>, "emit should return Mono<RecordId>")
+    }
+
+    @Test
+    fun `test SnippetFormatterProducer publishEvent`() =
+        runBlocking {
+            val redisTemplate =
+                ReactiveRedisTemplate(
+                    null,
+                    RedisSerializationContext.newSerializationContext<String, String>()
+                        .key(StringRedisSerializer())
+                        .value(StringRedisSerializer())
+                        .build(),
+                )
+            val producer = SnippetFormatterProducer("snippetFormatStream", redisTemplate)
+
+            val snippet = Snippet("user1", "snippet1", "content", UUID.randomUUID())
+            producer.publishEvent(snippet)
+        }
+
+    @Test
+    fun `test SnippetLintProducer publishEvent`() =
+        runBlocking {
+            val redisTemplate =
+                ReactiveRedisTemplate(
+                    null,
+                    RedisSerializationContext.newSerializationContext<String, String>()
+                        .key(StringRedisSerializer())
+                        .value(StringRedisSerializer())
+                        .build(),
+                )
+            val producer = SnippetLintProducer("snippetLintStream", redisTemplate)
+
+            val snippet = Snippet("user2", "snippet2", "code content", UUID.randomUUID())
+            producer.publishEvent(snippet)
+        }
+
+     */
 }

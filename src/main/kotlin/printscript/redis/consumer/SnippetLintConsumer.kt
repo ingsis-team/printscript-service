@@ -22,14 +22,14 @@ class SnippetLintConsumer
     ) : RedisStreamConsumer<Snippet>(streamKey, groupId, redis) {
         private val logger = LoggerFactory.getLogger(SnippetLintConsumer::class.java)
 
-        override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, Snippet>> {
+        public override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, Snippet>> {
             return StreamReceiver.StreamReceiverOptions.builder()
                 .pollTimeout(Duration.ofMillis(100))
                 .targetType(Snippet::class.java)
                 .build()
         }
 
-        override fun onMessage(record: ObjectRecord<String, Snippet>) {
+        public override fun onMessage(record: ObjectRecord<String, Snippet>) {
             try {
                 Thread.sleep(100 * 10)
                 logger.info("Id: ${record.id}, Value: ${record.value}, Stream: ${record.stream}, Group: $groupId")
