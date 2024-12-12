@@ -29,8 +29,8 @@ jobs:
         with:
           tags: |
             ghcr.io/ingsis-team/ingsis-printscript-service:latest
-          build-args: |
-            "TOKEN=${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}"
+          secrets: |
+            "github_token=${{ secrets.GITHUB_TOKEN }}"
           push: true
 
 

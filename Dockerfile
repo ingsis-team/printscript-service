@@ -1,17 +1,11 @@
-# Base image
+# syntax=docker/dockerfile:1
 FROM gradle:8.5-jdk21 AS build
 
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 
-
-ARG TOKEN
-ENV TOKEN=$TOKEN
-
-RUN gradle assemble
-
-
-RUN unset TOKEN
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN,required \
+    gradle assemble
 
 FROM amazoncorretto:21.0.4
 EXPOSE 8080
