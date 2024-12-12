@@ -82,7 +82,7 @@ class PrintScriptService
             val executionResult = executionOutput.string.split("\n")
             for (i in output.indices) {
                 if (executionResult[i] != output[i]) {
-                    return "failure"
+                    return "fail"
                 }
             }
             return "success"

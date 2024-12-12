@@ -48,7 +48,7 @@ class SnippetController(
         return ResponseEntity(snippetOutput, HttpStatus.OK)
     }
 
-    @PostMapping("/format")
+    /*@PostMapping("/format")
     fun formatSnippet(
         @RequestBody snippetRunnerDTO: SnippetDTO,
     ): ResponseEntity<SnippetOutputDTO> {
@@ -80,6 +80,20 @@ class SnippetController(
                 snippetRunnerDTO.correlationId,
             )
         return ResponseEntity(output, HttpStatus.OK)
+    }*/
+
+    @PostMapping("/format")
+    fun formatSnippet(
+        @RequestBody snippetRunnerDTO: SnippetDTO,
+    ): ResponseEntity<SnippetDTO> {
+        return ResponseEntity(snippetRunnerDTO, HttpStatus.OK)
+    }
+
+    @PostMapping("/lint")
+    fun runLinter(
+        @RequestBody snippetRunnerDTO: SnippetDTO,
+    ): ResponseEntity<SnippetDTO> {
+        return ResponseEntity(snippetRunnerDTO, HttpStatus.OK)
     }
 
     @GetMapping("/format/{userId}")
