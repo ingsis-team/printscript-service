@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           tags: |
-            ghcr.io/ingsis-team/ingsis-printscript-service:latest
+            ghcr.io/ingsis-team/printscript-service:latest
           secrets: |
             "github_token=${{ secrets.GITHUB_TOKEN }}"
           push: true
