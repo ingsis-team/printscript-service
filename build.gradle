@@ -20,7 +20,8 @@ repositories {
         url = uri("https://maven.pkg.github.com/ingsis-team/printscript")
         credentials {
             username = "ingsis-team"
-            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+            //password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+            password = System.getenv("GITHUB_TOKEN")
         }
     }
 }
@@ -92,4 +93,3 @@ tasks.register('installPreCommitHook') {
         println("No .git/hooks directory found. Please initialize a git repository.")
     }
 }
-
