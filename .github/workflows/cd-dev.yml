@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
@@ -22,10 +23,10 @@ jobs:
         with:
           registry: ghcr.io
           username: ingsis-team
-          password: ${{ secrets.ORG_DOCKER_PACKAGES_SECRET }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           tags: |
             ghcr.io/ingsis-team/ingsis-printscript-service:latest
